@@ -15,7 +15,7 @@ var importScript;
 (function(){
 
 	var METHOD_NAME = "importScript";
-	var DEBUG = true;
+	var DEBUG = false;
 
 
 	if (typeof(window.D) == "undefined"){
