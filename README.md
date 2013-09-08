@@ -29,7 +29,7 @@ MOTIVATION
 ----------
 
 I wanted a set of static web pages without having to explicitly list all the
-dependent javascript files in each explicitly.  Each JS file is responsible for
+dependent javascript files in each.  HTML files have trivial references to javascript, and each JS file is only responsible for
 importing it's own set of files, so dependencies are only mentioned once.
 
 BENEFITS
@@ -131,7 +131,7 @@ Here are some of complications to look out for
 
 **ONLY WORKS IN FIREFOX**
 
-This has only ever been tried on FireFox.
+This has only ever been tried on Firefox.
 
 **STILL HAS BUGS**
 
