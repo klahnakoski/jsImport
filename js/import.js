@@ -220,6 +220,7 @@ var importScript;
 				var script = document.createElement('script');
 				script.type = 'text/javascript;version=1.7';
 				script.onload = onLoadCallback;
+				script.async = false;
 				script.src = paths[i];
 				head.appendChild(script);
 			}//endif
