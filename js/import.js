@@ -195,10 +195,11 @@ var importScript;
 		}//for
 
 
-		paths = subtract(paths, existingScripts);
+		var netPaths = subtract(paths, existingScripts);
 
-		var numLoaded = paths.length;
+		var numLoaded = netPaths.length;
 		if (DEBUG) Log.note("Waiting for " + numLoaded + " scripts to load");
+
 		function onLoadCallback(){
 			numLoaded--;
 			if (numLoaded == 0){
@@ -206,26 +207,29 @@ var importScript;
 			}//endif
 		}
 
-		for(var i = 0; i < paths.length; i++){
-			if (DEBUG) Log.note("Add script: " + shortPath(paths[i]));
-			if (paths[i].substring(paths[i].length - 4) == ".css"){
+		var frag=document.createDocumentFragment();   //http://ejohn.org/blog/dom-documentfragments/
+		for(var i = 0; i < netPaths.length; i++){
+			if (DEBUG) Log.note("Add script: " + shortPath(netPaths[i]));
+			if (netPaths[i].substring(netPaths[i].length - 4) == ".css"){
 				//<link type="text/css" rel="stylesheet" href="lib/webdetails/lib/tipsy.css"/>
 				var newCSS = document.createElement('link');
 				newCSS.type = 'text/css';
 				newCSS.rel = "stylesheet";
-				newCSS.href = paths[i];
-				head.appendChild(newCSS);
+				newCSS.href = netPaths[i];
+				frag.appendChild(newCSS);
 				numLoaded--;
 			} else{
 				var script = document.createElement('script');
 				script.type = 'text/javascript;version=1.7';
 				script.onload = onLoadCallback;
 				script.async = false;
-				script.src = paths[i];
-				head.appendChild(script);
+				script.src = netPaths[i];
+				frag.appendChild(script);
 			}//endif
 		}//for
-		if (DEBUG) Log.note("Added " + paths.length + " scripts");
+		head.appendChild(frag);
+		if (numLoaded == 0) doneCallback();
+		if (DEBUG) Log.note("Added " + numLoaded + " scripts");
 	}//function
 
 
