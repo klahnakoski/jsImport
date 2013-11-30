@@ -192,7 +192,7 @@ var importScript;
 		}//for
 
 
-		//<link type="text/css" rel="stylesheet" href="lib/webdetails/lib/tipsy.css"/>
+		//<link type="text/css" rel="stylesheet" href="tests.lib/webdetails/tests.lib/tipsy.css"/>
 		var css = head.getElementsByTagName('link');
 		for(var s = 0; s < css.length; s++){
 			existingScripts.push(css[s].getAttribute("href"));
@@ -215,7 +215,7 @@ var importScript;
 		for(var i = 0; i < netPaths.length; i++){
 			if (DEBUG) Log.note("Add script: " + shortPath(netPaths[i]));
 			if (netPaths[i].substring(netPaths[i].length - 4) == ".css"){
-				//<link type="text/css" rel="stylesheet" href="lib/webdetails/lib/tipsy.css"/>
+				//<link type="text/css" rel="stylesheet" href="tests.lib/webdetails/tests.lib/tipsy.css"/>
 				var newCSS = document.createElement('link');
 				newCSS.type = 'text/css';
 				newCSS.rel = "stylesheet";

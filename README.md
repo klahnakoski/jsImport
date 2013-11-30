@@ -18,7 +18,7 @@ Usage
   (list of) Javacript file(s) to load, and a function to run when they are loaded
 
 
-        importScript('lib/A.js', function(){
+        importScript('tests.lib/A.js', function(){
             A();    	
         });
 
@@ -28,9 +28,10 @@ Usage
 MOTIVATION
 ----------
 
-I wanted a set of static web pages without having to explicitly list all the
-dependent javascript files in each.  HTML files have trivial references to javascript, and each JS file is only responsible for
-importing it's own set of files, so dependencies are only mentioned once.
+I wanted a set of static web pages without having to repeat all
+dependent javascript files in every HTML file.  With jsImport, HTML files have
+trivial references to javascript, and each JS file is only responsible for
+importing it's own set of files.  Dependencies are not redundant.
 
 BENEFITS
 --------
