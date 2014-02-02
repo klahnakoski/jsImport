@@ -7,6 +7,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-var C=function(){
-	$("#message").append("<div>C.js has been loaded</div>");
-};
+if (window.C!==undefined){
+	$("#message").append("<div>ERROR: C.js has been loaded twice</div>");
+	throw "ERROR: C.js has been twice"
+}else{
+	window.C=function(){
+		$("#message").append("<div>C.js has been loaded</div>");
+	};
+}//endif
