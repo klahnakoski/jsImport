@@ -4,7 +4,7 @@ importScript([
 	//COMMENTS INSIDE THE importScript, LIKE THIS COMMENT, CAN CORRUPT THE NAIVE
 	//PARSING 
 	'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
-	"http://fgnass.github.io/spin.js/dist/spin.js"
+	"spin.js"
 ]);
 ////////////////////////////////////////////////////////////////////////////////
 // This Source Code Form is subject to the terms of the Mozilla Public
