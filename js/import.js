@@ -19,8 +19,8 @@ var importScript;
 (function () {
 
 	var METHOD_NAME = "importScript";
+	var FORCE_RELOAD = false;  //COMPENSATE FOR BUG https://bugzilla.mozilla.org/show_bug.cgi?id=991252
 	var DEBUG = false;
-
 
 	if (typeof(window.Log) == "undefined") {
 		window.Log = {
@@ -230,7 +230,7 @@ var importScript;
 				script.type = 'text/javascript';
 				script.onload = onLoadCallback;
 				script.async = false;
-				script.src = netPaths[i];
+				script.src = netPaths[i] + (FORCE_RELOAD ? ("?" + new Date().getTime()) : "");  //RANDOM ENDING FORCES A REAL RELOAD;
 				frag.appendChild(script);
 			}//endif
 		}//for
