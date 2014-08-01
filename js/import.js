@@ -259,13 +259,7 @@ var importScript;
 					//HAVE __parent DEFINED, AND IN THEORY WE SHOULD BE ABLE CONTINUE
 					//WORKING ON THOSE
 					if (queue.length == 0 && unprocessed.length > 0) {
-						var hasParent = unprocessed.map(function (v, i) {
-							if (graph[v].__parent !== undefined) return v;
-						});
-						if (hasParent.length == 0) Log.error("Isolated cycle found");
-						hasParent = subtract(hasParent, processed);
-
-						var smallLoop = findSmallLoop(hasParent);
+						var smallLoop = findSmallLoop(unprocessed);
 						if (smallLoop===undefined){
 							Log.error("No loop found where one is expected")
 						}//endif
