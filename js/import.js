@@ -11,12 +11,11 @@
 //THIS FUNCTION CAN ONLY BE RUN ONCE, AFTER WHICH IT WILL REPLACE ITSELF WITH A NULL FUNCTION
 var importScript;
 
-
 (function () {
 
 	var METHOD_NAME = "importScript";
 	var FORCE_RELOAD = true;  //COMPENSATE FOR BUG https://bugzilla.mozilla.org/show_bug.cgi?id=991252
-	var DEBUG = false;
+	var DEBUG = true;
 
 	if (typeof(window.Log) == "undefined") {
 		window.Log = {
@@ -185,6 +184,7 @@ var importScript;
 		var scripts = head.getElementsByTagName('script');
 		for (var s = 0; s < scripts.length; s++) {
 			var p = scripts[s].getAttribute("src");
+			if (p==null) continue;
 			var fp = getFullPath(window.location.pathname, p);
 			existingScripts.push(fp);
 		}//for
@@ -264,13 +264,13 @@ var importScript;
 						});
 						if (hasParent.length == 0) Log.error("Isolated cycle found");
 						hasParent = subtract(hasParent, processed);
-						unprocessed = subtract(unprocessed, hasParent);
-						for (var k = 0; k < hasParent.length; k++) {
-							if (DEBUG && contains(processed, hasParent[k]))
-								Log.error("Duplicate pushed!!");
-							queue.push(hasParent[k]);
-//							unprocessed.remove([hasParent[k]]);
-						}
+
+						var smallLoop = findSmallLoop(hasParent);
+						if (smallLoop===undefined){
+							Log.error("No loop found where one is expected")
+						}//endif
+						unprocessed = subtract(unprocessed, smallLoop);
+						queue = queue.concat(smallLoop);
 					}//endif
 				}//END OF HACK
 
@@ -280,20 +280,52 @@ var importScript;
 		}//method
 
 
+		function findSmallLoop(candidates){
+			var smallestLoop;
+
+			function DFS(n, past){
+				var t = graph[n];
+				t.children.forEach(function(c){
+					if (c==n) return;
+					if (!contains(candidates, c)) return;
+					if (contains(past, c)){
+						//LOOP FOUND
+						if (smallestLoop===undefined || past.length < smallestLoop.length){
+							smallestLoop = past.concat()
+						}//endif
+						return;
+					}//endif
+					past.push(c);
+					DFS(c, past);
+					past.pop();
+				});
+			}//function
+
+			candidates.forEach(function(c){
+				DFS(c, [c]);
+			});
+
+			return smallestLoop;
+		}//method
+
+
 		function processStartingPoint(nodeId) {
 			if (nodeId == undefined) {
 				throw "You have a cycle!!";
 			}
-			for (var i = 0; i < graph[nodeId].children.length; i++) {
-				var child = graph[nodeId].children[i];
-				graph[child].indegrees--;
-				graph[child].__parent = graph[nodeId];		//MARKUP FOR HACK
+			var node = graph[nodeId];
+			for (var i = 0; i < node.children.length; i++) {
+				var childName = node.children[i];
+				var child = graph[childName];
+				child.indegrees--;
+				child.__parent = node;		//MARKUP FOR HACK
+				child.__depth = Math.min(child.__depth, node.__depth) + 1;
 			}//for
 
-			var node = graph[nodeId].id;
-			if (DEBUG && contains(processed, node))
+			var nodeID = node.id;
+			if (DEBUG && contains(processed, nodeID))
 				Log.error("Duplicate pushed!!");
-			processed.push(node);
+			processed.push(nodeID);
 		}//method
 
 
@@ -302,6 +334,7 @@ var importScript;
 				var n = {};
 				n.id = name;
 				n.indegrees = 0;
+				n.__depth = 0;
 				n.children = [];
 				graph[name] = n;
 				if (DEBUG && contains(unprocessed, name))
@@ -322,6 +355,25 @@ var importScript;
 			graph[e.import].children.push(e.file);
 			graph[e.file].indegrees += 1;
 		}//for
+		if (DEBUG){
+			Log.note(
+				"Graph\n"+
+				(function(){
+					var output = [];
+					var keys = Object.keys(graph);
+					for (var i = keys.length; i--;) {
+						var parent = keys[i];
+						var children = graph[parent].children;
+
+						for (var j = children.length; j--;) {
+							output.push(parent + "\t" + children[j])
+						}//for
+					}//for
+					return output.join("\n");
+				})()
+			);
+		}//endif
+
 		var numberOfNodes = Object.keys(graph).length;
 		processList();
 
@@ -407,8 +459,8 @@ var importScript;
 		});
 	}//method
 
+	__importScript__.DEBUG=DEBUG;
+	__importScript__.sort=sort;     //FOR TESTING
 
 	importScript = __importScript__;
-
-
 })();
