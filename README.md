@@ -3,8 +3,8 @@ jsImport
 
 Load Javascript dependencies dynamically
 
-Motivation
-----------
+Motivation (2012)
+-----------------
 
 I wanted a set of static web pages without having to repeat all
 dependent javascript files in every HTML file.  With jsImport, HTML files have
@@ -41,6 +41,7 @@ Usage
 Here is [a simple example](tests/Simple.html) to demonstrate usage.
 
 
+
 BENEFITS
 --------
 
@@ -53,6 +54,10 @@ All but a few JS files are mentioned in your HTML page.  The dependencies have
 
 With the JS out of the HTML, each JS file is only responsible for importing the
 JS it needs.
+
+**Cycles allowed**
+
+Dependency cycles is allowed: Ambiguity of import order is left to the individual modules to manage.  This only becomes an issue in the most convoluted code.
 
 **Simple call structure**
 
@@ -79,6 +84,10 @@ immediate namespace.
 There are many old-style JS out there that add multiple names to the window
 object.  ```importScript``` can import those simply, without encapsulating and
 exporting as per require.js
+
+**Delayed Imports** 
+
+Imports need not be done all at once.  Since `importScript()` is a function, it can be called at anytime to bring in more resources
 
 **Less Server-side work**
 
@@ -136,29 +145,26 @@ DRAWBACKS
 
 Here are some of complications to look out for
 
-**ONLY WORKS IN FIREFOX**
+**Only known to work in Firefox an Chrome**
 
-This has only ever been tried on Firefox.
+This has only ever been tried on Firefox and Chrome.
 
-**STILL HAS BUGS**
+**Still has bugs**
 
-Only the most naive logic is used to pre-process the Javascript and pull out ```importScript()``` calls.
+Only the most naive logic is used to pre-process the Javascript and pull out `importScript()` calls.  As long as you don't have a namespace collision with `importScript` you should be fine.
 
-**SLOW**
+**Slow**
 
-All scripts are loaded immediately, which can delay apparent page loading.  Caching reduces the load times
-significantly, but I suggest some sort of default screen while the user waits.
+Scripts are loaded dynamically, which can delay apparent page loading when importing many files.  Caching reduces the load times significantly (set `FORCE_RELOAD = false`).
+.
 
-**NO PACKAGE MANGER**
+**No Package Manager**
 
-Slowness could be solved if the dependecy analysis and minification was done at
-deployment time.  No such code has been written to do this yet
+Imports would be significantly faster if there was a package manager to concatenate and minify the code at deployment time.  No such code has been written to do this yet
 
-**NOT DYNAMIC**
+**Debugging Mode**
 
-The dependency analysis is done once for the whole page.  If there are JS
-files that never get used, they are still loaded.   Maybe this library can be
-extended to perform dynamic loads.
+When debugging, set `FORCE_RELOAD = false`; the suffix added to all imported files can mess with the debugger breakpoints., 
 
 
 
