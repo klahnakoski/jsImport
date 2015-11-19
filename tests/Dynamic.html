@@ -13,10 +13,11 @@
 <div id="spinner"></div>
 
 <script type="application/javascript">
-importScript('lib/A.js', function(){
+importScript('lib/A_withLateImport.js', function(){
 	A();		//WE GET A() IN OUR NAMESPACE
 	verify("A.js has been loadedB.js has been loadedC.js has been loaded");
 });
+
 </script>
 
 

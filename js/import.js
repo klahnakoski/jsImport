@@ -248,14 +248,19 @@ var importScript;
 		}, 15000);
 
 		function onLoadCallback() {
-			var path = "/"+between(between(this.src, "://", "?"), "/");
+			var path;
+			if (this.src.startsWith(window.location.origin)) {
+				path = this.src.slice(window.location.origin.length);
+			}else{
+				path = this.src
+			}//endif
 			remove(numLoaded, path);
 			if (numLoaded.length == 0) {
 				doneCallback();
 			}else{
 				if (DEBUG) Log.note("Loaded: "+this.outerHTML+ " remaining: "+numLoaded.length)
 			}//endif
-		}
+		}//endif
 
 		var frag = document.createDocumentFragment();   //http://ejohn.org/blog/dom-documentfragments/
 		for (var i = 0; i < netPaths.length; i++) {
